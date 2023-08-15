@@ -9,7 +9,8 @@
     "lint": "next lint",
     "dev:backend": "convex dev",
     "dev:frontend": "next dev",
-    "dev:init": "convex dev --run init --until-success"
+    "dev:init": "convex dev --run init --until-success",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@clerk/clerk-react": "^4.21.9-snapshot.56dc3e3",
@@ -46,6 +47,7 @@
     "@types/css-font-loading-module": "^0.0.8",
     "@types/ws": "^8.5.5",
     "concurrently": "^8.2.0",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.0.1"
   }
 }

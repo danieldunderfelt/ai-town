@@ -1,15 +1,15 @@
-'use client';
-import { useState } from 'react';
-import Chats from './Chats';
-import Game from './Game';
-import type { Player } from '../../convex/schema';
+'use client'
+import { useState } from 'react'
+import Chats from './Chats'
+import Game from './Game'
+import type { Player } from '../../convex/schema'
 
-import { useElementSize } from 'usehooks-ts';
+import { useElementSize } from 'usehooks-ts'
 
 export default function GameWrapper() {
-  const [selectedPlayer, setSelectedPlayer] = useState<Player>();
+  const [selectedPlayer, setSelectedPlayer] = useState<Player>()
 
-  const [gameWrapperRef, { width, height }] = useElementSize();
+  const [gameWrapperRef, { width, height }] = useElementSize()
 
   return (
     <div className="mx-auto w-full max-w mt-7 grid grid-rows-[240px_1fr] lg:grid-rows-[1fr] lg:grid-cols-[1fr_auto] lg:h-[700px] max-w-[1400px] min-h-[480px] game-frame">
@@ -25,5 +25,5 @@ export default function GameWrapper() {
         <Chats playerState={selectedPlayer} />
       </div>
     </div>
-  );
+  )
 }

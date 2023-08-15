@@ -1,7 +1,7 @@
-import { BaseTexture, ISpritesheetData, Spritesheet } from 'pixi.js';
-import { useState, useEffect, useRef } from 'react';
-import { AnimatedSprite, Container, Text } from '@pixi/react';
-import * as PIXI from 'pixi.js';
+import { BaseTexture, ISpritesheetData, Spritesheet } from 'pixi.js'
+import { useState, useEffect, useRef } from 'react'
+import { AnimatedSprite, Container, Text } from '@pixi/react'
+import * as PIXI from 'pixi.js'
 
 export const Character = ({
   textureUrl,
@@ -16,23 +16,23 @@ export const Character = ({
   onClick,
 }: {
   // Path to the texture packed image.
-  textureUrl: string;
+  textureUrl: string
   // The data for the spritesheet.
-  spritesheetData: ISpritesheetData;
+  spritesheetData: ISpritesheetData
   // The pose of the NPC.
-  x: number;
-  y: number;
-  orientation: number;
-  isMoving?: boolean;
+  x: number
+  y: number
+  orientation: number
+  isMoving?: boolean
   // Shows a thought bubble if true.
-  isThinking?: boolean;
+  isThinking?: boolean
   // Shows a speech bubble if true.
-  isSpeaking?: boolean;
+  isSpeaking?: boolean
   // The speed of the animation. Can be tuned depending on the side and speed of the NPC.
-  speed?: number;
-  onClick: () => void;
+  speed?: number
+  onClick: () => void
 }) => {
-  const [spriteSheet, setSpriteSheet] = useState<Spritesheet>();
+  const [spriteSheet, setSpriteSheet] = useState<Spritesheet>()
   useEffect(() => {
     const parseSheet = async () => {
       const sheet = new Spritesheet(
@@ -40,27 +40,27 @@ export const Character = ({
           scaleMode: PIXI.SCALE_MODES.NEAREST,
         }),
         spritesheetData,
-      );
-      await sheet.parse();
-      setSpriteSheet(sheet);
-    };
-    void parseSheet();
-  }, []);
+      )
+      await sheet.parse()
+      setSpriteSheet(sheet)
+    }
+    void parseSheet()
+  }, [])
 
   // The first "left" is "right" but reflected.
-  const roundedOrientation = Math.round(orientation / 90);
-  const direction = ['left', 'up', 'left', 'down'][roundedOrientation];
+  const roundedOrientation = Math.round(orientation / 90)
+  const direction = ['left', 'up', 'left', 'down'][roundedOrientation]
 
   // Prevents the animation from stopping when the texture changes
   // (see https://github.com/pixijs/pixi-react/issues/359)
-  const ref = useRef<PIXI.AnimatedSprite | null>(null);
+  const ref = useRef<PIXI.AnimatedSprite | null>(null)
   useEffect(() => {
     if (isMoving) {
-      ref.current?.play();
+      ref.current?.play()
     }
-  }, [direction, isMoving]);
+  }, [direction, isMoving])
 
-  if (!spriteSheet) return null;
+  if (!spriteSheet) return null
 
   return (
     <Container x={x} y={y} interactive={true} pointerdown={onClick}>
@@ -82,5 +82,5 @@ export const Character = ({
         anchor={{ x: 0.5, y: 0.5 }}
       />
     </Container>
-  );
-};
+  )
+}

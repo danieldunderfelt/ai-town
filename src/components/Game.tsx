@@ -1,32 +1,32 @@
-import { Stage } from '@pixi/react';
-import { useEffect, useRef, useState } from 'react';
-import { PixiStaticMap } from './PixiStaticMap';
-import { ConvexProvider, useConvex, useMutation, useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
-import { Player, SelectPlayer } from './Player';
-import { HEARTBEAT_PERIOD } from '../../convex/config';
-import { Id } from '../../convex/_generated/dataModel';
-import dynamic from 'next/dynamic';
+import { Stage } from '@pixi/react'
+import { useEffect, useRef, useState } from 'react'
+import { PixiStaticMap } from './PixiStaticMap'
+import { ConvexProvider, useConvex, useMutation, useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
+import { Player, SelectPlayer } from './Player'
+import { HEARTBEAT_PERIOD } from '../../convex/config'
+import { Id } from '../../convex/_generated/dataModel'
+import dynamic from 'next/dynamic'
 
 // Disabling SSR for these since they don't work server side.
-const PixiViewport = dynamic(() => import('./PixiViewport'), { ssr: false });
-const Sound = dynamic(() => import('./Sound'), { ssr: false });
+const PixiViewport = dynamic(() => import('./PixiViewport'), { ssr: false })
+const Sound = dynamic(() => import('./Sound'), { ssr: false })
 
 export const Game = ({
   setSelectedPlayer,
   width,
   height,
 }: {
-  setSelectedPlayer: SelectPlayer;
-  width: number;
-  height: number;
+  setSelectedPlayer: SelectPlayer
+  width: number
+  height: number
 }) => {
-  const convex = useConvex();
-  const worldState = useQuery(api.players.getWorld, {});
+  const convex = useConvex()
+  const worldState = useQuery(api.players.getWorld, {})
 
-  const offset = useServerTimeOffset(worldState?.world._id);
-  if (!worldState) return null;
-  const { players } = worldState;
+  const offset = useServerTimeOffset(worldState?.world._id)
+  if (!worldState) return null
+  const { players } = worldState
   return (
     <div className="container">
       <Sound>
@@ -53,9 +53,9 @@ export const Game = ({
         </Stage>
       </Sound>
     </div>
-  );
-};
-export default Game;
+  )
+}
+export default Game
 
 /**
  * Calculates the time delta between the server's clock and ours, from
@@ -66,33 +66,33 @@ export default Game;
  * @returns The average offset between the server and the client
  */
 const useServerTimeOffset = (worldId: Id<'worlds'> | undefined) => {
-  const serverNow = useMutation(api.players.now);
-  const [offset, setOffset] = useState(0);
-  const prev = useRef<number[]>([]);
+  const serverNow = useMutation(api.players.now)
+  const [offset, setOffset] = useState(0)
+  const prev = useRef<number[]>([])
   useEffect(() => {
     const updateOffset = async () => {
-      if (!worldId) return;
-      let serverTime;
+      if (!worldId) return
+      let serverTime
       try {
-        serverTime = await serverNow({ worldId });
+        serverTime = await serverNow({ worldId })
       } catch (e) {
         // If we failed to get it, just skip this one
-        return;
+        return
       }
-      const newOffset = serverTime - Date.now();
-      prev.current.push(newOffset);
-      if (prev.current.length > 5) prev.current.shift();
+      const newOffset = serverTime - Date.now()
+      prev.current.push(newOffset)
+      if (prev.current.length > 5) prev.current.shift()
       const rollingOffset =
         prev.current.length === 1
           ? prev.current
           : // Take off the max & min as outliers
-            [...prev.current].sort().slice(1, -1);
-      const avgOffset = rollingOffset.reduce((a, b) => a + b, 0) / prev.current.length;
-      setOffset(avgOffset);
-    };
-    void updateOffset();
-    const interval = setInterval(updateOffset, HEARTBEAT_PERIOD);
-    return () => clearInterval(interval);
-  }, [worldId]);
-  return offset;
-};
+            [...prev.current].sort().slice(1, -1)
+      const avgOffset = rollingOffset.reduce((a, b) => a + b, 0) / prev.current.length
+      setOffset(avgOffset)
+    }
+    void updateOffset()
+    const interval = setInterval(updateOffset, HEARTBEAT_PERIOD)
+    return () => clearInterval(interval)
+  }, [worldId])
+  return offset
+}

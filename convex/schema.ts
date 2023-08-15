@@ -1,6 +1,6 @@
-import { defineSchema, defineTable } from 'convex/server';
-import { Infer, v } from 'convex/values';
-import { Table } from './lib/utils';
+import { defineSchema, defineTable } from 'convex/server'
+import { Infer, v } from 'convex/values'
+import { Table } from './lib/utils'
 
 export const Worlds = Table('worlds', {
   // name: v.string(),
@@ -10,7 +10,7 @@ export const Worlds = Table('worlds', {
   height: v.optional(v.number()),
   mapId: v.id('maps'),
   frozen: v.boolean(),
-});
+})
 
 export const Maps = Table('maps', {
   tileSetUrl: v.string(),
@@ -19,14 +19,14 @@ export const Maps = Table('maps', {
   // An array of layers, which is a 2-d array of tile indices.
   bgTiles: v.array(v.array(v.array(v.number()))),
   objectTiles: v.array(v.array(v.number())),
-});
+})
 
-export const Position = v.object({ x: v.number(), y: v.number() });
-export type Position = Infer<typeof Position>;
+export const Position = v.object({ x: v.number(), y: v.number() })
+export type Position = Infer<typeof Position>
 // Position plus a direction, as degrees counter-clockwise from East / Right
 
-export const Pose = v.object({ position: Position, orientation: v.number() });
-export type Pose = Infer<typeof Pose>;
+export const Pose = v.object({ position: Position, orientation: v.number() })
+export type Pose = Infer<typeof Pose>
 
 const commonFields = {
   from: v.id('players'),
@@ -34,7 +34,7 @@ const commonFields = {
   to: v.array(v.id('players')),
   toNames: v.array(v.string()),
   ts: v.number(),
-};
+}
 export const Message = v.union(
   // TODO: maybe just switch back to regular messages
   v.object({
@@ -50,8 +50,8 @@ export const Message = v.union(
     ...commonFields,
     type: v.literal('left'),
   }),
-);
-export type Message = Infer<typeof Message>;
+)
+export type Message = Infer<typeof Message>
 // export type ResponseMessage = Omit<Message, 'data'> & {
 //   data: Extract<Message['data'], { type: 'responded' }>;
 // };
@@ -60,7 +60,7 @@ export const Stopped = v.object({
   type: v.literal('stopped'),
   reason: v.union(v.literal('interrupted'), v.literal('idle')),
   pose: Pose,
-});
+})
 
 export const Walking = v.object({
   type: v.literal('walking'),
@@ -69,10 +69,10 @@ export const Walking = v.object({
   ignore: v.array(v.id('players')),
   startTs: v.number(),
   targetEndTs: v.number(),
-});
+})
 
-export const Motion = v.union(Walking, Stopped);
-export type Motion = Infer<typeof Motion>;
+export const Motion = v.union(Walking, Stopped)
+export type Motion = Infer<typeof Motion>
 
 // Materiailized from journal & memories for a snapshot.
 export const Player = v.object({
@@ -85,8 +85,8 @@ export const Player = v.object({
   thinking: v.boolean(),
   lastPlan: v.optional(v.object({ plan: v.string(), ts: v.number() })),
   lastChat: v.optional(v.object({ message: Message, conversationId: v.id('conversations') })),
-});
-export type Player = Infer<typeof Player>;
+})
+export type Player = Infer<typeof Player>
 
 // Journal documents are append-only, and define an player's state.
 export const Journal = Table('journal', {
@@ -125,13 +125,13 @@ export const Journal = Table('journal', {
     //   pose: Pose,
     // }),
   ),
-});
-export type Entry = Infer<typeof Journal.doc>;
-export type EntryType = Entry['data']['type'];
+})
+export type Entry = Infer<typeof Journal.doc>
+export type EntryType = Entry['data']['type']
 export type EntryOfType<T extends EntryType> = Omit<Entry, 'data'> & {
-  data: Extract<Entry['data'], { type: T }>;
-};
-export type MessageEntry = EntryOfType<'talking' | 'startConversation' | 'leaveConversation'>;
+  data: Extract<Entry['data'], { type: T }>
+}
+export type MessageEntry = EntryOfType<'talking' | 'startConversation' | 'leaveConversation'>
 
 export const Memories = Table('memories', {
   playerId: v.id('players'),
@@ -178,12 +178,12 @@ export const Memories = Table('memories', {
     // }),
     // Could be a way to have the agent reflect and change identities
   ),
-});
-export type Memory = Infer<typeof Memories.doc>;
-export type MemoryType = Memory['data']['type'];
+})
+export type Memory = Infer<typeof Memories.doc>
+export type MemoryType = Memory['data']['type']
 export type MemoryOfType<T extends MemoryType> = Omit<Memory, 'data'> & {
-  data: Extract<Memory['data'], { type: T }>;
-};
+  data: Extract<Memory['data'], { type: T }>
+}
 
 export const Characters = Table('characters', {
   name: v.string(),
@@ -197,8 +197,8 @@ export const Characters = Table('characters', {
     }),
   }),
   speed: v.number(),
-});
-export type SpritesheetData = Infer<(typeof Characters.fields)['spritesheetData']>;
+})
+export type SpritesheetData = Infer<(typeof Characters.fields)['spritesheetData']>
 
 // Hierarchical location within tree
 // Future: build zone lookup from position, whether player-dependent or global.
@@ -284,4 +284,4 @@ export default defineSchema(
   // tables all the time or write migrations while iterating quickly.
   // Instead, we just create new worlds with the correct data schema.
   { schemaValidation: true },
-);
+)

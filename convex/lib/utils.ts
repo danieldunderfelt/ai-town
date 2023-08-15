@@ -1,7 +1,7 @@
-import { Validator, v } from 'convex/values';
-import { WithoutSystemFields, defineTable } from 'convex/server';
-import { Doc, Id, TableNames } from '../_generated/dataModel';
-import { DatabaseReader } from '../_generated/server';
+import { Validator, v } from 'convex/values'
+import { WithoutSystemFields, defineTable } from 'convex/server'
+import { Doc, Id, TableNames } from '../_generated/dataModel'
+import { DatabaseReader } from '../_generated/server'
 
 /**
  * Filters out null and undefined elements from an array.
@@ -9,7 +9,7 @@ import { DatabaseReader } from '../_generated/server';
  * @returns List of elements with nulls removed.
  */
 export function pruneNull<T>(list: (T | null | undefined)[]): T[] {
-  return list.filter((i) => i !== null && i !== undefined) as T[];
+  return list.filter((i) => i !== null && i !== undefined) as T[]
 }
 
 /**
@@ -23,13 +23,13 @@ export async function asyncMap<FromType, ToType>(
   list: Iterable<FromType>,
   asyncTransform: (item: FromType, index: number) => Promise<ToType>,
 ): Promise<ToType[]> {
-  const promises: Promise<ToType>[] = [];
-  let idx = 0;
+  const promises: Promise<ToType>[] = []
+  let idx = 0
   for (const item of list) {
-    promises.push(asyncTransform(item, idx));
-    idx += 1;
+    promises.push(asyncTransform(item, idx))
+    idx += 1
   }
-  return Promise.all(promises);
+  return Promise.all(promises)
 }
 
 /**
@@ -43,16 +43,16 @@ export async function asyncFilter<T>(
   list: Iterable<T>,
   asyncTransform: (item: T, index: number) => Promise<any>,
 ): Promise<T[]> {
-  const promises: Promise<boolean>[] = [];
-  const results: T[] = [];
-  let idx = 0;
+  const promises: Promise<boolean>[] = []
+  const results: T[] = []
+  let idx = 0
   for (const item of list) {
-    promises.push(asyncTransform(item, idx));
-    results.push(item);
-    idx += 1;
+    promises.push(asyncTransform(item, idx))
+    results.push(item)
+    idx += 1
   }
-  const mask = await Promise.all(promises);
-  return results.filter((_, idx) => !!mask[idx]);
+  const mask = await Promise.all(promises)
+  return results.filter((_, idx) => !!mask[idx])
 }
 
 /**
@@ -65,13 +65,13 @@ export async function getAll<TableName extends TableNames>(
   db: DatabaseReader,
   ids: Id<TableName>[],
 ): Promise<Doc<TableName>[]> {
-  const docs = await asyncMap(ids, db.get);
+  const docs = await asyncMap(ids, db.get)
   return docs.map((doc, idx) => {
     if (doc === null) {
-      throw new Error(`Missing document for id ${ids[idx]}`);
+      throw new Error(`Missing document for id ${ids[idx]}`)
     }
-    return doc;
-  });
+    return doc
+  })
 }
 
 // Returns a bunch of useful parts of a table definition.
@@ -83,12 +83,12 @@ export function Table<T extends Record<string, Validator<any, any, any>>, TableN
     ...fields,
     _id: v.id(name) as Validator<string & { __tableName: TableName }>,
     _creationTime: v.number(),
-  };
-  const table = defineTable(fields);
+  }
+  const table = defineTable(fields)
   return {
     fields,
     table,
     docFields,
     doc: v.object(docFields),
-  };
+  }
 }

@@ -1,4 +1,4 @@
-import { SpritesheetData } from '../../schema';
+import { SpritesheetData } from '../../schema'
 
 export const data: SpritesheetData = {
   frames: {
@@ -56,4 +56,4 @@ export const data: SpritesheetData = {
     up: ['up', 'up2', 'up3'],
     down: ['down', 'down2', 'down3'],
   },
-};
+}

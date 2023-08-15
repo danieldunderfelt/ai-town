@@ -1,22 +1,22 @@
-import { useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
-import { Id } from '../../convex/_generated/dataModel';
-import type { Player as PlayerState } from '../../convex/schema';
-import clsx from 'clsx';
-import LoginButton from './LoginButton';
-import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
+import { Id } from '../../convex/_generated/dataModel'
+import type { Player as PlayerState } from '../../convex/schema'
+import clsx from 'clsx'
+import LoginButton from './LoginButton'
+import { SignedIn, SignedOut } from '@clerk/nextjs'
 
 function Messages({
   conversationId,
   currentPlayerId,
 }: {
-  conversationId: Id<'conversations'>;
-  currentPlayerId: Id<'players'>;
+  conversationId: Id<'conversations'>
+  currentPlayerId: Id<'players'>
 }) {
   const messages =
     useQuery(api.chat.listMessages, {
       conversationId,
-    }) || [];
+    }) || []
   return (
     <>
       {[...messages]
@@ -46,7 +46,7 @@ function Messages({
           </div>
         ))}
     </>
-  );
+  )
 }
 
 export default function Chats({ playerState }: { playerState: PlayerState | undefined }) {
@@ -55,7 +55,7 @@ export default function Chats({ playerState }: { playerState: PlayerState | unde
       <div className="h-full text-xl flex text-center items-center p-4">
         Click on an agent on the map to see chat history.
       </div>
-    );
+    )
   }
 
   return (
@@ -100,5 +100,5 @@ export default function Chats({ playerState }: { playerState: PlayerState | unde
         </div>
       </SignedOut>
     </>
-  );
+  )
 }
